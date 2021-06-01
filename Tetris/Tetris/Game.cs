@@ -21,5 +21,47 @@ namespace Tetris
                 return new Point(brick.X, brick.Y);//블럭 위치 반환
             }
         }
+        #region 단일체
+        internal static Game Singleton
+        {
+            get;
+            private set;
+        }
+        static Game()
+        {
+            Singleton = new Game();
+        }
+        Game()
+        {
+            brick = new Brick();//블럭 생성
+        }
+        #endregion
+        internal bool MoveLeft()
+        {
+            if(brick.X > 0)
+            {
+                brick.MoveLeft();
+                return true;
+            }
+            return false;
+        }
+        internal bool MoveRight()
+        {
+            if ((brick.X + 1) < GameRule.Board_X)
+            {
+                brick.MoveRight();
+                return true;
+            }
+            return false;
+        }
+        internal bool MoveDown()
+        {
+            if ((brick.Y + 1) < GameRule.Board_Y)
+            {
+                brick.MoveDown();
+                return true;
+            }
+            return false;
+        }
     }
 }

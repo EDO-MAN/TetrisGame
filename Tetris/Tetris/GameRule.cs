@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Tetris
 {
-    class GameRule
+    public class GameRule
     {
-        public const int Board_X = 10;//게임판 가로길이
-        public const int Board_Y = 20;//게임판 세로길이
+        public const int Board_X = 10;//게임판 폭
+        public const int Board_Y = 20;//게임판 높이
 
         public const int Start_X = 4;//블럭 시작 좌표X
         public const int Start_Y = 0;//블럭 시작 좌표Y
 
-        public const int Pixel_X = 10;//게임 1칸당 X값
-        public const int Pixel_Y = 15;//게임 1칸당 치Y
+        public const int Pixel_X = 30;//x좌표 1의 픽셀 개수
+        public const int Pixel_Y = 30;//y좌표 1의 픽셀 개수
     }
 }
