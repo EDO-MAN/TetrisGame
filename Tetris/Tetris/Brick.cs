@@ -8,21 +8,21 @@ namespace Tetris
 {
     class Brick
     {
-        internal int X
+        internal int X//도형 x좌표
         {
             get;
             private set;
         }
-        internal int Y
+        internal int Y//도형 y좌표
         {
             get;
             private set;
         }
-        internal Brick()
+        internal Brick()//블럭 생성
         {
             Reset();
         }
-        internal void Reset()
+        public void Reset()
         {
             X = GameRule.Start_X;
             Y = GameRule.Start_Y;
