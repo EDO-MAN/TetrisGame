@@ -36,32 +36,98 @@ namespace Tetris
             brick = new Brick();//블럭 생성
         }
         #endregion
+        internal int BrickNum
+        {
+            get
+            {
+                return brick.BrickNum;
+            }
+        }
+        internal int Turn
+        {
+            get
+            {
+                return brick.Turn;
+            }
+        }
         internal bool MoveLeft()
         {
-            if(brick.X > 0)
+            for(int xx = 0; xx < 4; xx++)
             {
-                brick.MoveLeft();
-                return true;
+                for(int yy = 0; yy < 4; yy++)
+                {
+                    if(BrickValue.bvals[brick.BrickNum, Turn, xx, yy] != 0)
+                    {
+                        if(brick.X + xx <= 0)
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
-            return false;
+            brick.MoveLeft();
+            return true;
+           
+       
         }
         internal bool MoveRight()
         {
-            if ((brick.X + 1) < GameRule.Board_X)
+            for (int xx = 0; xx < 4; xx++)
             {
-                brick.MoveRight();
-                return true;
+                for (int yy = 0; yy < 4; yy++)
+                {
+                    if (BrickValue.bvals[brick.BrickNum, Turn, xx, yy] != 0)
+                    {
+                        if (brick.X + xx + 1 >= GameRule.Board_X)
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
-            return false;
+            brick.MoveRight();
+            return true;
         }
         internal bool MoveDown()
         {
-            if ((brick.Y + 1) < GameRule.Board_Y)
+            for (int xx = 0; xx < 4; xx++)
             {
-                brick.MoveDown();
-                return true;
+                for (int yy = 0; yy < 4; yy++)
+                {
+                    if (BrickValue.bvals[brick.BrickNum, Turn, xx, yy] != 0)
+                    {
+                        if (brick.Y + yy + 1 >= GameRule.Board_Y)
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
-            return false;
+            brick.MoveDown();
+            return true;
+        }
+        internal bool MoveTurn()
+        {
+            for (int xx = 0; xx < 4; xx++)
+            {
+                for (int yy = 0; yy < 4; yy++)
+                {
+                    if (BrickValue.bvals[brick.BrickNum, (Turn+1) % 4, xx, yy] != 0)
+                    {
+                        if (((brick.X + xx) < 0) || ((brick.X + xx) >= GameRule.Board_X) || ((brick.Y + yy) >= GameRule.Board_X))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            brick.MoveTurn();
+            return true;
+        }
+
+        internal void Next()
+        {
+            brick.Reset();
         }
     }
 }
