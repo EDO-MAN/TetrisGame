@@ -9,8 +9,9 @@ namespace Tetris
 {
     class Game
     {
-        Brick brick;
-        internal Point NowPosition//현재 블럭 위치
+        Brick brick;//벽돌 개체 참조 선언
+        Board gboard = Board.GameBoard;
+        public Point NowPosition//블럭 현재 좌표
         {
             get
             {
@@ -22,11 +23,19 @@ namespace Tetris
             }
         }
         #region 단일체
-        internal static Game Singleton
+        public static Game Singleton
         {
             get;
             private set;
         }
+        public int this[int x, int y]//보드 영역 값 속성 정의
+        {
+            get
+            {
+                return gboard[x, y];
+            }
+        }
+
         static Game()
         {
             Singleton = new Game();
@@ -36,98 +45,119 @@ namespace Tetris
             brick = new Brick();//블럭 생성
         }
         #endregion
-        internal int BrickNum
+        public int BrickNum//현재 벽돌 종류 확인하는 속성
         {
             get
             {
                 return brick.BrickNum;
             }
         }
-        internal int Turn
+        public int Turn//현재 벽돌 회전 정도 확인하는 속성
         {
             get
             {
                 return brick.Turn;
             }
         }
-        internal bool MoveLeft()
-        {
-            for(int xx = 0; xx < 4; xx++)
-            {
-                for(int yy = 0; yy < 4; yy++)
-                {
-                    if(BrickValue.bvals[brick.BrickNum, Turn, xx, yy] != 0)
-                    {
-                        if(brick.X + xx <= 0)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            brick.MoveLeft();
-            return true;
-           
-       
-        }
-        internal bool MoveRight()
+        public bool MoveLeft()
         {
             for (int xx = 0; xx < 4; xx++)
             {
                 for (int yy = 0; yy < 4; yy++)
                 {
                     if (BrickValue.bvals[brick.BrickNum, Turn, xx, yy] != 0)
+                    {
+                        if (brick.X + xx <= 0)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            if (gboard.MoveEnable(brick.BrickNum, Turn, brick.X - 1, brick.Y))
+            {
+                brick.MoveLeft();
+                return true;
+            }
+            return false;
+        }
+        public bool MoveRight()
+        {
+            for (int xx = 0; xx < 4; xx++)
+            {
+                for (int yy = 0; yy < 4; yy++)
+                {
+                    if (BrickValue.bvals[brick.BrickNum,Turn, xx, yy] != 0)
                     {
                         if (brick.X + xx + 1 >= GameRule.Board_X)
-                        {
+                        { 
                             return false;
                         }
                     }
                 }
             }
-            brick.MoveRight();
-            return true;
+            if (gboard.MoveEnable(brick.BrickNum, Turn, brick.X + 1, brick.Y))
+            {
+                brick.MoveRight();
+                return true;
+            }
+            return false;
         }
-        internal bool MoveDown()
+        public bool MoveDown()
         {
             for (int xx = 0; xx < 4; xx++)
             {
                 for (int yy = 0; yy < 4; yy++)
                 {
-                    if (BrickValue.bvals[brick.BrickNum, Turn, xx, yy] != 0)
+                    if (BrickValue.bvals[brick.BrickNum,Turn, xx, yy] != 0)
                     {
                         if (brick.Y + yy + 1 >= GameRule.Board_Y)
                         {
+                            gboard.Store(brick.BrickNum, Turn, brick.X, brick.Y);
                             return false;
                         }
                     }
                 }
             }
-            brick.MoveDown();
-            return true;
+            if (gboard.MoveEnable(brick.BrickNum, Turn, brick.X, brick.Y + 1))
+            {
+                brick.MoveDown();
+                return true;
+            }
+            gboard.Store(brick.BrickNum, Turn, brick.X, brick.Y);
+            return false;
         }
-        internal bool MoveTurn()
+        public bool MoveTurn()
         {
             for (int xx = 0; xx < 4; xx++)
             {
                 for (int yy = 0; yy < 4; yy++)
                 {
-                    if (BrickValue.bvals[brick.BrickNum, (Turn+1) % 4, xx, yy] != 0)
+                    if (BrickValue.bvals[brick.BrickNum, (Turn + 1) % 4, xx, yy] != 0)
                     {
-                        if (((brick.X + xx) < 0) || ((brick.X + xx) >= GameRule.Board_X) || ((brick.Y + yy) >= GameRule.Board_X))
+                        if (((brick.X+xx)<0)||(brick.X+xx)>=GameRule.Board_X||((brick.Y + yy)  >= GameRule.Board_Y))
                         {
                             return false;
                         }
                     }
                 }
             }
-            brick.MoveTurn();
-            return true;
+            if (gboard.MoveEnable(brick.BrickNum, (Turn + 1) % 4, brick.X, brick.Y))
+            {
+                brick.MoveTurn();
+                return true;
+            }
+            return false;
         }
 
-        internal void Next()
+        public bool Next()
         {
             brick.Reset();
+            return gboard.MoveEnable(brick.BrickNum, Turn, brick.X, brick.Y);
+        }
+        public void Restart()//다시 시작
+        {
+            gboard.ClearBoard();
         }
     }
 }

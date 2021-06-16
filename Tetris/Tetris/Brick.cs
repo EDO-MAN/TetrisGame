@@ -8,17 +8,27 @@ namespace Tetris
 {
     class Brick
     {
-        internal int X//도형 x좌표
+        public int X//도형 x좌표
         {
             get;
             private set;
         }
-        internal int Y//도형 y좌표
+        public int Y//도형 y좌표
         {
             get;
             private set;
         }
-        internal Brick()//블럭 생성
+        public int Turn//현재 회전 정도 구현
+        {
+            get;
+            private set;
+        }
+        public int BrickNum//현재 벽돌 모양
+        {
+            get;
+            private set;
+        }
+        public Brick()//블럭 생성
         {
             Reset();
         }
@@ -27,34 +37,25 @@ namespace Tetris
             Random random = new Random();
             X = GameRule.Start_X;
             Y = GameRule.Start_Y;
-            Turn = random.Next() % 4;
+            //Turn = random.Next() % 4;
             BrickNum = random.Next() % 7;//7개 도형 만들때 random.Next() % 7;
         }
-        internal void MoveLeft()
+        public void MoveLeft()
         {
             X--;
         }
-        internal void MoveRight()
+        public void MoveRight()
         {
             X++;
         }
-        internal void MoveDown()
+        public void MoveDown()
         {
             Y++;
         }
-        internal void MoveTurn()
+        public void MoveTurn()//회전 메서드
         {
             Turn = (Turn + 1) % 4;
         }
-        internal int Turn
-        {
-            get;
-            private set;
-        }
-        internal int BrickNum
-        {
-            get;
-            private set;
-        }
+        
     }
 }
