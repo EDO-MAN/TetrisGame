@@ -147,7 +147,8 @@ namespace Tetris
                 brick.MoveTurn();
                 return true;
             }
-            return false;
+            else 
+                return false;
         }
 
         public bool Next()

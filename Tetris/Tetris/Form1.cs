@@ -13,6 +13,7 @@ namespace Tetris
     public partial class Form1 : Form
     {
         Game game;
+        int brick_X;
         int bx;
         int by;
         int board_W;
@@ -85,6 +86,7 @@ namespace Tetris
                     {
                         Rectangle now_rt = new Rectangle((now.X+xx) * board_W + 2, (now.Y+yy) * board_H + 2, board_W - 4, board_H - 4);
                         graphics.DrawRectangle(pen, now_rt);
+                        brick_X = now_rt.X;
                     }
                 }
             }
@@ -104,11 +106,39 @@ namespace Tetris
                     MoveSDown();
                     return;
                 case Keys.Up:
-                    MoveTurn();
+                    if (brick_X < bx * GameRule.Pixel_X / 2)
+                    {
+                        MoveRight();
+                        MoveRight();
+                        MoveTurn();
+                        MoveLeft();
+                        MoveLeft();
+                    }
+                    else
+                    {
+                        MoveLeft();
+                        MoveTurn();
+                        MoveRight();
+                    }
                     return;
                 case Keys.Down:
                     MoveDown();
                     return;
+                case Keys.Escape:
+                    timer1_down.Enabled = false;
+                    DialogResult re = MessageBox.Show("다시시작", "끝내기", MessageBoxButtons.YesNo);
+                    if (re == DialogResult.Yes)
+                    {
+                        game.Restart();
+                        timer1_down.Enabled = true;
+                        Invalidate();
+                    }
+                    else
+                    {
+                        this.Close();
+                    }
+                    return;
+
             }
         }
 
@@ -235,6 +265,13 @@ namespace Tetris
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
+            bool ch = true;
+            if (bx / 2 > brick_X)
+                ch = true;
+            else
+                ch = false;
+            Console.WriteLine(bx / 2 + " : " + brick_X);
+
             MoveDown();
         }
     }
