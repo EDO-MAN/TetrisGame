@@ -24,6 +24,7 @@ namespace Tetris
         }
         #endregion
         int[,] board = new int[GameRule.Board_X, GameRule.Board_Y];//벽돌 쌓기 위한 배열 생성
+        public int Score;
         public int this[int x, int y]
         {
             get
@@ -78,17 +79,6 @@ namespace Tetris
                 }
             }
         }
-
-        private void ClearLine(int y)//라인의 모든 x좌표 블럭 확인 후 지우기
-        {
-            for(;y>0;y--)
-            {
-                for(int xx = 0; xx < GameRule.Board_X; xx++)
-                {
-                    board[xx, y] = board[xx, y - 1];
-                }
-            }
-        }
         private bool CheckLine(int y)
         {
             for(int xx = 0; xx < GameRule.Board_X; xx++)
@@ -99,6 +89,18 @@ namespace Tetris
                 }
             }
             return true;
+        }
+
+        private void ClearLine(int y)//라인의 모든 x좌표 블럭 확인 후 지우기
+        {
+            for(;y>0;y--)
+            {
+                for(int xx = 0; xx < GameRule.Board_X; xx++)
+                {
+                    board[xx, y] = board[xx, y - 1];
+                    Score += 10;
+                }
+            }
         }
         public void ClearBoard()//보드 초기화
         {

@@ -31,7 +31,7 @@ namespace Tetris
             by = GameRule.Board_Y;//보드 넓이
             board_W = GameRule.Pixel_X;//X좌표의 1의 x Pixels
             board_H = GameRule.Pixel_Y;//y좌표의 1의 y Pixels
-            SetClientSizeCore(bx * board_W, by * board_H);
+            //SetClientSizeCore(bx * board_W, by * board_H);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -51,7 +51,7 @@ namespace Tetris
                     if (game[xx, yy] != 0)
                     {
                         Rectangle rec = new Rectangle(xx * board_W + 2, yy * board_H + 2, board_W - 4, board_H - 4);
-                        graphics.DrawRectangle(Pens.Green, rec);
+                        //graphics.DrawRectangle(Pens.Green, rec);
                         graphics.FillRectangle(Brushes.Red, rec);//쌓인 블럭 표현
                     }
                 }
