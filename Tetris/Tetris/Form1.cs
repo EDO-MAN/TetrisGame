@@ -13,6 +13,7 @@ namespace Tetris
     public partial class Form1 : Form
     {
         Game game;
+        Board board;
         int brick_X;
         int bx;
         int by;
@@ -29,6 +30,7 @@ namespace Tetris
         private void Form1_Load(object sender, EventArgs e)
         {
             game = Game.Singleton;
+            board = Board.GameBoard;
             bx = GameRule.Board_X;//보드 폭
             by = GameRule.Board_Y;//보드 넓이
             board_W = GameRule.Pixel_X;//X좌표의 1의 x Pixels
@@ -41,7 +43,7 @@ namespace Tetris
             DrawGraduation(e.Graphics);//선그리는 함수
             DrawBrick(e.Graphics);//블럭 만드는 함수
             DrawBoard(e.Graphics);//보드 그리는 함수
-            //label2.Text;
+            label2.Text = board.Score + "점";
             DoubleBuffered = true;
         }
 

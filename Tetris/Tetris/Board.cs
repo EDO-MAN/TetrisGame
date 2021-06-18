@@ -24,7 +24,11 @@ namespace Tetris
         }
         #endregion
         int[,] board = new int[GameRule.Board_X, GameRule.Board_Y];//벽돌 쌓기 위한 배열 생성
-        
+        public int Score
+        {
+            get;
+            private set;
+        }
         public int this[int x, int y]
         {
             get
@@ -99,9 +103,9 @@ namespace Tetris
                 for(int xx = 0; xx < GameRule.Board_X; xx++)
                 {
                     board[xx, y] = board[xx, y - 1];
-                   //scorenum += 10;
                 }
             }
+            Score += 10;
         }
         public void ClearBoard()//보드 초기화
         {
