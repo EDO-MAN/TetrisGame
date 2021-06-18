@@ -18,6 +18,8 @@ namespace Tetris
         int by;
         int board_W;
         int board_H;
+        bool onebrick;
+
 
         public Form1()
         {
@@ -39,6 +41,7 @@ namespace Tetris
             DrawGraduation(e.Graphics);//선그리는 함수
             DrawBrick(e.Graphics);//블럭 만드는 함수
             DrawBoard(e.Graphics);//보드 그리는 함수
+            //label2.Text;
             DoubleBuffered = true;
         }
 
@@ -61,7 +64,7 @@ namespace Tetris
         private void DrawGraduation(Graphics graphics)//선그리는 함수
         {
             Pen pen = new Pen(Color.Black);
-           
+
             for (int x = 0; x < bx; x++)
             {
                 for (int y = 0; y < by; y++)
@@ -75,17 +78,24 @@ namespace Tetris
         private void DrawBrick(Graphics graphics)//사각형 그리기
         {
             Pen pen = new Pen(Color.Blue, 4);//그릴 펜 설정
+            
             Point now = game.NowPosition;//블럭 위치 설정
             int bn = game.BrickNum;//블럭 모양
             int tn = game.Turn;//블럭 회전 값
-            for(int xx=0;xx < 4; xx++)
+            for (int xx = 0; xx < 4; xx++)
             {
                 for (int yy = 0; yy < 4; yy++)
                 {
                     if (BrickValue.bvals[bn, tn, xx, yy] != 0)
                     {
-                        Rectangle now_rt = new Rectangle((now.X+xx) * board_W + 2, (now.Y+yy) * board_H + 2, board_W - 4, board_H - 4);
+                        Rectangle now_rt = new Rectangle((now.X + xx) * board_W + 2, (now.Y + yy) * board_H + 2, board_W - 4, board_H - 4);
+                        //Rectangle center_rt = new Rectangle(now.X * board_W + 2, now.Y * board_H + 2, board_W - 4, board_H - 4);
+                        if(BrickValue.bvals[bn, tn, xx, yy] == BrickValue.bvals[0, 2, xx, yy])
+                        {
+                            onebrick = true;
+                        }
                         graphics.DrawRectangle(pen, now_rt);
+                        //graphics.FillRectangle(Brushes.Black, center_rt);
                         brick_X = now_rt.X;
                     }
                 }
@@ -106,7 +116,14 @@ namespace Tetris
                     MoveSDown();
                     return;
                 case Keys.Up:
-                    if (brick_X < bx * GameRule.Pixel_X / 2)
+                    if (brick_X == 32)
+                    {
+                        MoveRight();
+                        MoveTurn();
+                        MoveLeft();
+                        return;
+                    }
+                    else if(brick_X == 2)
                     {
                         MoveRight();
                         MoveRight();
@@ -115,15 +132,18 @@ namespace Tetris
                         MoveLeft();
                         MoveLeft();
                         MoveLeft();
+                    }
+                    else if (brick_X >= 242 && onebrick)
+                    {
                         MoveLeft();
+                        MoveLeft();
+                        MoveTurn();
+                        MoveRight();
+                        MoveRight();
+                        return;
                     }
                     else
-                    {
-                        MoveLeft();
                         MoveTurn();
-                        MoveRight();
-                        MoveRight();
-                    }
                     return;
                 case Keys.Down:
                     MoveDown();
@@ -142,13 +162,21 @@ namespace Tetris
                         this.Close();
                     }
                     return;
+                case Keys.Z:
+                    bool ch = true;
+                    if (bx / 2 > brick_X)
+                        ch = true;
+                    else
+                        ch = false;
+                    MessageBox.Show(bx / 2 + " : " + brick_X);
+                    return;
 
             }
         }
 
         private void MoveSDown()//한번에 내려가는 함수
         {
-            while(game.MoveDown())
+            while (game.MoveDown())
             {
                 Region rg = MakeRegion(0, -1);
                 Invalidate(rg);
@@ -157,7 +185,7 @@ namespace Tetris
         }
         private void MoveDown()//천천히 내려가는 함수
         {
-            if(game.MoveDown())
+            if (game.MoveDown())
             {
                 Region rg = MakeRegion(0, -1);
                 Invalidate(rg);
@@ -192,7 +220,7 @@ namespace Tetris
                 Invalidate(rg);
             }
         }
-        
+
         private Region MakeRegion(int cx, int cy)
         {
             Point now = game.NowPosition;
@@ -200,14 +228,14 @@ namespace Tetris
             int bn = game.BrickNum;
             int tn = game.Turn;
             Region region = new Region();
-            for(int xx=0; xx < 4; xx++)
+            for (int xx = 0; xx < 4; xx++)
             {
-                for(int yy=0; yy < 4; yy++)
+                for (int yy = 0; yy < 4; yy++)
                 {
-                    if(BrickValue.bvals[bn,tn,xx,yy] != 0)
+                    if (BrickValue.bvals[bn, tn, xx, yy] != 0)
                     {
                         Rectangle rect1 = new Rectangle((now.X + xx) * board_W + 2, (now.Y + yy) * board_H + 2, board_W - 4, board_H - 4);
-                        Rectangle rect2 = new Rectangle((now.X +cx+ xx) * board_W, (now.Y + cy + yy) * board_H, board_W, board_H);
+                        Rectangle rect2 = new Rectangle((now.X + cx + xx) * board_W, (now.Y + cy + yy) * board_H, board_W, board_H);
                         Region rg1 = new Region(rect1);
                         Region rg2 = new Region(rect2);
                         region.Union(rg1);
@@ -254,8 +282,8 @@ namespace Tetris
             else
             {
                 timer1_down.Enabled = false;
-                DialogResult re = MessageBox.Show("다시시작","끝내기", MessageBoxButtons.YesNo);
-                if(re == DialogResult.Yes)
+                DialogResult re = MessageBox.Show("다시시작", "끝내기", MessageBoxButtons.YesNo);
+                if (re == DialogResult.Yes)
                 {
                     game.Restart();
                     timer1_down.Enabled = true;
@@ -269,13 +297,6 @@ namespace Tetris
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            bool ch = true;
-            if (bx / 2 > brick_X)
-                ch = true;
-            else
-                ch = false;
-            Console.WriteLine(bx / 2 + " : " + brick_X);
-
             MoveDown();
         }
     }
