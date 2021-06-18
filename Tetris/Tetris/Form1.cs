@@ -31,7 +31,7 @@ namespace Tetris
             by = GameRule.Board_Y;//보드 넓이
             board_W = GameRule.Pixel_X;//X좌표의 1의 x Pixels
             board_H = GameRule.Pixel_Y;//y좌표의 1의 y Pixels
-            //SetClientSizeCore(bx * board_W, by * board_H);
+            SetClientSizeCore(bx * board_W + 200, by * board_H);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -110,7 +110,10 @@ namespace Tetris
                     {
                         MoveRight();
                         MoveRight();
+                        MoveRight();
                         MoveTurn();
+                        MoveLeft();
+                        MoveLeft();
                         MoveLeft();
                         MoveLeft();
                     }
@@ -118,6 +121,7 @@ namespace Tetris
                     {
                         MoveLeft();
                         MoveTurn();
+                        MoveRight();
                         MoveRight();
                     }
                     return;
