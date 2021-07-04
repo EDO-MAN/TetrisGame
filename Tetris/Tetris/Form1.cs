@@ -21,7 +21,6 @@ namespace Tetris
         int board_H;
         bool onebrick;
 
-
         public Form1()
         {
             InitializeComponent();
